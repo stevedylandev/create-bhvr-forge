@@ -15,14 +15,17 @@ export const TEMPLATES: Record<string, TemplateInfo> = {
 export const honoRpcTemplate = `import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { ApiResponse } from "shared/dist";
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import { createTestClient, http, publicActions, walletActions } from "viem";
+import { foundry } from 'viem/chains'
 import { counterAbi } from 'contracts'
 
-const client = createPublicClient({
-  chain: sepolia,
+const client = createTestClient({
+  chain: foundry,
+  mode: 'anvil',
   transport: http()
 })
+  .extend(publicActions)
+  .extend(walletActions);
 
 export const app = new Hono()
 
@@ -79,8 +82,8 @@ export const hcWithType = (...args: Parameters<typeof hc>): Client =>
 export const defaultTemplate = `import { useState } from 'react'
 import beaver from './assets/beaver.svg'
 import { hcWithType } from 'server/dist/client'
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import { createTestClient, http, publicActions, walletActions } from "viem";
+import { foundry } from 'viem/chains'
 import { counterAbi } from 'contracts'
 import './App.css'
 
@@ -88,10 +91,13 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
 const CONTRACT_ADDRESS = "0x742d35Cc6634C0532925a3b8D404fBaF464DfD85"
 
 const client = hcWithType(SERVER_URL);
-const viemClient = createPublicClient({
-  chain: sepolia,
+const viemClient = createTestClient({
+  chain: foundry,
+  mode: 'anvil',
   transport: http()
 })
+  .extend(publicActions)
+  .extend(walletActions)
 
 type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
 
@@ -129,12 +135,12 @@ function App() {
   return (
     <>
       <div>
-        <a href="https://github.com/stevedylandev/bhvr" target="_blank">
+        <a href="https://github.com/stevedylandev/bhvr-forge" target="_blank">
           <img src={beaver} className="logo" alt="beaver logo" />
         </a>
       </div>
-      <h1>bhvr</h1>
-      <h2>Bun + Hono + Vite + React</h2>
+      <h1>bhvr forge</h1>
+      <h2>Bun + Hono + Vite + React + Forge</h2>
       <p>A typesafe fullstack monorepo with smart contracts</p>
       <div className="card">
         <div className='button-container'>
@@ -144,7 +150,7 @@ function App() {
           <button onClick={readContract}>
             Read Contract
           </button>
-          <a className='docs-link' target='_blank' href="https://bhvr.dev">Docs</a>
+          <a className='docs-link' target='_blank' href="https://forge.bhvr.dev">Docs</a>
         </div>
         {data && (
           <pre className='response'>
@@ -171,8 +177,8 @@ export default App`;
 export const tailwindTemplate = `import { useState } from 'react'
 import beaver from './assets/beaver.svg'
 import { hcWithType } from 'server/dist/client'
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import { createTestClient, http, publicActions, walletActions } from "viem";
+import { foundry } from 'viem/chains'
 import { counterAbi } from 'contracts'
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
@@ -181,10 +187,13 @@ const CONTRACT_ADDRESS = "0x742d35Cc6634C0532925a3b8D404fBaF464DfD85"
 type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
 
 const client = hcWithType(SERVER_URL);
-const viemClient = createPublicClient({
-  chain: sepolia,
+const viemClient = createTestClient({
+  chain: foundry,
+  mode: 'anvil',
   transport: http()
 })
+  .extend(publicActions)
+  .extend(walletActions);
 
 function App() {
   const [data, setData] = useState<Awaited<ReturnType<ResponseType["json"]>> | undefined>()
@@ -219,15 +228,15 @@ function App() {
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-6 items-center justify-center min-h-screen">
-      <a href="https://github.com/stevedylandev/bhvr" target="_blank">
+      <a href="https://github.com/stevedylandev/bhvr-forge" target="_blank">
         <img
           src={beaver}
           className="w-16 h-16 cursor-pointer"
           alt="beaver logo"
         />
       </a>
-      <h1 className="text-5xl font-black">bhvr</h1>
-      <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
+      <h1 className="text-5xl font-black">bhvr forge</h1>
+      <h2 className="text-2xl font-bold">Bun + Hono + Vite + React + Forge</h2>
       <p>A typesafe fullstack monorepo with smart contracts</p>
       <div className='flex items-center gap-4'>
         <button
@@ -242,7 +251,7 @@ function App() {
         >
           Read Contract
         </button>
-        <a target='_blank' href="https://bhvr.dev" className='border-1 border-black text-black px-2.5 py-1.5 rounded-md'>
+        <a target='_blank' href="https://forge.bhvr.dev" className='border-1 border-black text-black px-2.5 py-1.5 rounded-md'>
           Docs
         </a>
       </div>
@@ -271,18 +280,21 @@ export const shadcnTemplate = `import { useState } from 'react'
 import beaver from './assets/beaver.svg'
 import { Button } from './components/ui/button'
 import { hcWithType } from 'server/dist/client'
-import { createPublicClient, http } from 'viem'
-import { sepolia } from 'viem/chains'
+import { createTestClient, http, publicActions, walletActions } from "viem";
+import { forge } from 'viem/chains'
 import { counterAbi } from 'contracts'
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
 const CONTRACT_ADDRESS = "0x742d35Cc6634C0532925a3b8D404fBaF464DfD85"
 
 const client = hcWithType(SERVER_URL);
-const viemClient = createPublicClient({
-  chain: sepolia,
+const viemClient = createTestClient({
+  chain: forge,
+  mode: 'anvil',
   transport: http()
 })
+  .extend(publicActions)
+  .extend(walletActions);
 
 type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
 
@@ -319,15 +331,15 @@ function App() {
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-6 items-center justify-center min-h-screen">
-      <a href="https://github.com/stevedylandev/bhvr" target="_blank">
+      <a href="https://github.com/stevedylandev/bhvr-forge" target="_blank">
         <img
           src={beaver}
           className="w-16 h-16 cursor-pointer"
           alt="beaver logo"
         />
       </a>
-      <h1 className="text-5xl font-black">bhvr</h1>
-      <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
+      <h1 className="text-5xl font-black">bhvr forge</h1>
+      <h2 className="text-2xl font-bold">Bun + Hono + Vite + React + Forge</h2>
       <p>A typesafe fullstack monorepo with smart contracts</p>
       <div className='flex items-center gap-4'>
         <Button
@@ -344,7 +356,7 @@ function App() {
           variant='secondary'
           asChild
         >
-          <a target='_blank' href="https://bhvr.dev">
+          <a target='_blank' href="https://forge.bhvr.dev">
           Docs
           </a>
         </Button>

@@ -20,7 +20,7 @@ export const DEFAULT_REPO = "stevedylandev/bhvr-forge";
 
 export function displayBanner() {
   try {
-    const text = figlet.textSync("bhvr-forge", {
+    const text = figlet.textSync("bhvr forge", {
       font: "Big",
       horizontalLayout: "default",
       verticalLayout: "default",
